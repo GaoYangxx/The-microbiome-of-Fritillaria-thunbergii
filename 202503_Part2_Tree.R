@@ -1,4 +1,3 @@
-#图2a没分析的有筛选多于生物学重复的序列、
 #图2a
 # 安装 R 包
 #https://github.com/grunwaldlab/metacoder/archive/refs/heads/master.zip
