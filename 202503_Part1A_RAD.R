@@ -1,4 +1,3 @@
-#图1a没分析的有环境因子的四分位比较、去噪方法比较、筛选asv丰度、
 #图1a
 options(timeout = 600)  # 设置超时时间为600秒
 install.packages("raster")
@@ -23,11 +22,7 @@ library(terra)
 library(png)
 library(grid)
 library(dplyr)
-# ---------------- 1. 获取指定坐标气候和植物数据 ----------------
-# 获取WorldClim全球气候数据，指定保存路径
-download_path <- "D:/study/master/worldclim_data"
-climate_data <- worldclim_global(var = "bio", res = 2.5, path = download_path)
-climate_data
+# ---------------- 1. 获取坐标和植物数据 ----------------
 #输入坐标
 pops <- data.frame(
   code = c("JR", "JJ", "TZ", "PA"),
@@ -40,15 +35,10 @@ pops$latitude <- as.numeric(pops$latitude)
 # 使用 sf 包转换为空间数据框
 pops_sf <- st_as_sf(pops, coords = c("longitude", "latitude"), crs = 4326) 
 pops_sf
-# 检查 pops_sf 和WorldClim数据的 CRS
+# 检查 pops_sf 数据的 CRS
 crs(pops_sf)
-crs(climate_data)
-# 查看 pops_sf 和WorldClim的范围
+# 查看 pops_sf 的范围
 ext(pops_sf)
-ext(climate_data)
-#提取坐标对应的气候数据
-climate_values <- extract(climate_data, pops_sf)
-climate_values
 #获取植物数据
 rb_metadata <- read.delim(file = "D:/study/master/rb_metadata.tsv", sep = "\t", header = TRUE, check.names = FALSE) 
 # 计算每个 Group 的数值型变量的均值
@@ -59,8 +49,7 @@ plant_data_mean_id <- rb_metadata %>%
   arrange(Origin)  # 按自定义顺序排列
 print(plant_data_mean_id)
 # ---------------- 2. 绘制雷达图 ----------------
-# 去除 ID 列，保留气候和植物数据
-climate_values_data <- climate_values[, -1]
+# 去除 ID 列，保留植物数据
 plant_data_mean <- plant_data_mean_id %>%
   ungroup() %>%  # 取消分组
   select(-Origin)  # 删除 Origin 列
@@ -68,8 +57,7 @@ plant_data_mean <- plant_data_mean_id %>%
 normalize_data <- function(data) {
   return((data - min(data)) / (max(data) - min(data)) * 100)
 }
-# 对气候和植物数据进行归一化
-climate_values_data_normalized <- as.data.frame(lapply(climate_values_data, normalize_data))
+# 对植物数据进行归一化
 plant_data_mean_normalized <- as.data.frame(lapply(plant_data_mean, normalize_data))
 # 定义雷达图绘制函数
 create_beautiful_radarchart <- function(data, color = "#00AFBB", 
@@ -88,48 +76,6 @@ create_beautiful_radarchart <- function(data, color = "#00AFBB",
     caxislabels = caxislabels, title = title, ...
   )
 }
-#气候雷达图
-#保存图片
-#png("D:/study/master/Main_Figure_tables/Figure_1/1a_radar_chart_climate.png", width = 2000, height = 2000, res = 300, bg = "transparent")
-# 设置图形布局
-op <- par(mar = c(1, 1, 1, 1))
-par(mfrow = c(2, 2))  # 生成多个雷达图（根据采样点数量调整）
-# 颜色定义
-colors <- c("JR" = "#DC9445FF", 
-            "JJ" = "#E5614CFF", 
-            "TZ" = "#bee183", 
-            "PA" = "#ADD8E6")
-# 循环绘制每个采样点的雷达图
-for(i in 1:nrow(climate_values_data_normalized)) {
-  # 创建雷达图数据，仍然使用归一化的数据进行绘制
-  radar_data <- rbind(rep(100, ncol(climate_values_data_normalized)),  # 最大值
-                      rep(0, ncol(climate_values_data_normalized)),    # 最小值
-                      climate_values_data_normalized[i, ])  # 当前采样点的归一化数据
-  # 获取当前采样点的ID
-  sample_id <- climate_values$ID[i]
-  color <- colors[sample_id]
-  # 绘制雷达图
-  colnames(radar_data)<-rep("",ncol(radar_data))# 去除变量名标签
-  create_beautiful_radarchart(
-    data = radar_data,
-    vlabels = NULL,  
-    caxislabels = NULL,  # 去除轴标签
-    title = NULL,        # 去掉标题
-    color = color
-  )
-  # 添加每个变量的标签（显示原始数据值）
-  for(j in 1:ncol(climate_values_data_normalized)) {
-    # 获取每个点的位置
-    angle <- (2 * pi * (j + 3.75)) / ncol(climate_values_data_normalized) #旋转角度
-    # 计算标签位置
-    x_pos <- cos(angle) * (as.numeric(climate_values_data_normalized[i, j])+50) /130   # 设置标签距离中心的距离
-    y_pos <- sin(angle) * (as.numeric(climate_values_data_normalized[i, j])+50) /130   # 设置标签距离中心的距离
-    # 在雷达图上添加原始数据值标签
-    text(x_pos, y_pos, labels = sprintf("%.1f", climate_values[i, j+1]), col = "black", cex = 1)
-  }
-}
-# 关闭图形设备，保存文件
-#dev.off()
 #外观性状雷达图
 plant_appearance <- plant_data_mean[4:9]
 plant_appearance_normalized <- plant_data_mean_normalized[4:9]
