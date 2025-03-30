@@ -1,2 +1,3 @@
-# The-microbiome-of-Fritillaria-thunbergii
-Master's Project
+# **Diversity and biogeography of the microbiome in the bulbs and rhizosphere soil of Fritillaria thunbergii（浙贝母鳞茎及根际土壤微生物群落的多样性与生物地理分布）**
+This repository is associated with the master project.Medicinal plant resources are being depleted worldwide at a rapid pace and it becomes critical to better understand how invisible key players in the medicinal plant ecosystems, such as microbes, respond to changing environmental conditions.This project is exploring Fritillaria thunbergii populations in Jiangsu and Zhejiang provinces, China, to unravel their associated microbial diversity, biogeography and specific mechanisms developed by microbes to cope in such different environments.This specific repository is associated with the manuscript "Diversity and biogeography of the microbiome in the bulbs and rhizosphere soil of Fritillaria thunbergii”.\
+该数据库隶属于硕士项目。全球药用植物资源正加速消耗，亟需深入理解药用植物生态系统中微生物等隐形关键成员如何响应环境变化。本项目探索中国江苏省和浙江省的浙贝母居群，以揭示其微生物多样性、生物地理格局及微生物应对不同环境的特异性机制。本数据库与论文《浙贝母鳞茎及根际土壤微生物群落的多样性与生物地理分布》直接关联。
