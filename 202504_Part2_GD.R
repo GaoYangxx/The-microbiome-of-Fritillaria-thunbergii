@@ -84,36 +84,42 @@ b_df.line <- b_df[which(b_df$Method != "Observed"),]
 b_df.line$Method <- factor(b_df.line$Method, c("Rarefaction", "Extrapolation"))
 b_df.asympote <- data.frame(y = c(24,8),
                             Asymptote = c("jrg", "jjg", "tzg", "pag","jrn", "jjn", "tzn", "pan"))
+# 正确的顺序（小写版本）
+ordered_groups <- c("jrg", "jjg", "tzg", "pag", "jrn", "jjn", "tzn", "pan")
+# 设置为有序因子（所有 b_df 中涉及的都要设置）
+b_df$Assemblage <- factor(b_df$Assemblage, levels = ordered_groups)
+b_df.line$Assemblage <- factor(b_df.line$Assemblage, levels = ordered_groups)
+b_df.point$Assemblage <- factor(b_df.point$Assemblage, levels = ordered_groups)
 # 绘图
 plot_bacteria <-ggplot(b_df, aes(x = x, y = y, colour = Assemblage)) + 
-  geom_line(aes(linetype = Method), lwd = 1.5, data = b_df.line) +
-  geom_ribbon(aes(ymin = y.lwr, ymax = y.upr, fill = Assemblage, colour = NULL), alpha = 0.2) +
-  labs(x = "Number of samples", y = "Bacterial ASV richness") +
-  scale_fill_manual(values = c("#8C57A2FF","#3EBCB6","#82581FFF","#2F509EFF",
-                               "#E5614CFF","#97A1A7FF","#DC9445FF","#bee183")) +
-  scale_color_manual(values = c("#8C57A2FF","#3EBCB6","#82581FFF","#2F509EFF",
-                                "#E5614CFF","#97A1A7FF","#DC9445FF","#bee183")) +
-  scale_linetype_discrete(name = NULL) +
-  scale_x_continuous(breaks = c(3, 6, 9, 12)) +
-  guides(
-    colour = "none", 
-    fill = "none",
-    linetype = guide_legend(override.aes = list(size = 2))  # 控制图例线条粗细
-  ) +
-  theme_bw() +
-  theme(panel.border = element_blank(), 
-        panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        axis.line = element_line(colour = "black"),
-        legend.position = c(0.01, 1),
-        legend.justification = c(0, 1),
-        legend.key.width = unit(2, "cm"), # 控制横线长度
-        axis.title.x = element_text(size = 16), # 坐标轴标题（x、y）
-        axis.title.y = element_text(size = 16),
-        axis.text.x = element_text(size = 14), # 坐标轴刻度标签（数字）
-        axis.text.y = element_text(size = 14),
-        legend.text = element_text(size = 14), # 图例文字
-        legend.title = element_text(size = 14) )
+    geom_line(aes(linetype = Method), lwd = 1.5, data = b_df.line) +
+    geom_ribbon(aes(ymin = y.lwr, ymax = y.upr, fill = Assemblage, colour = NULL), alpha = 0.2) +
+    labs(x = "Number of samples", y = "Bacterial ASV richness") +
+    scale_fill_manual(values = c("#8C57A2FF","#3EBCB6","#82581FFF","#2F509EFF",
+                                 "#E5614CFF","#97A1A7FF","#DC9445FF","#bee183")) +
+    scale_color_manual(values = c("#8C57A2FF","#3EBCB6","#82581FFF","#2F509EFF",
+                                  "#E5614CFF","#97A1A7FF","#DC9445FF","#bee183")) +
+    scale_linetype_discrete(name = NULL) +
+    scale_x_continuous(breaks = c(3, 6, 9, 12)) +
+    guides(
+        colour = "none", 
+        fill = "none",
+        linetype = guide_legend(override.aes = list(size = 2))  # 控制图例线条粗细
+    ) +
+    theme_bw() +
+    theme(panel.border = element_blank(), 
+          panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(), 
+          axis.line = element_line(colour = "black"),
+          legend.position = c(0.01, 1),
+          legend.justification = c(0, 1),
+          legend.key.width = unit(2, "cm"), # 控制横线长度
+          axis.title.x = element_text(size = 16), # 坐标轴标题（x、y）
+          axis.title.y = element_text(size = 16),
+          axis.text.x = element_text(size = 14), # 坐标轴刻度标签（数字）
+          axis.text.y = element_text(size = 14),
+          legend.text = element_text(size = 14), # 图例文字
+          legend.title = element_text(size = 14) )
 plot_bacteria
 # 自定义标签和颜色（与你主图保持一致）
 legend_df <- data.frame(
@@ -216,59 +222,73 @@ f_df.line <- f_df[which(f_df$Method != "Observed"),]
 f_df.line$Method <- factor(f_df.line$Method, c("Rarefaction", "Extrapolation"))
 f_df.asympote <- data.frame(y = c(24,8),
                             Asymptote = c("jrg", "jjg", "tzg", "pag","jrn", "jjn", "tzn", "pan"))
+# 正确的顺序（小写版本）
+ordered_groups <- c("jrg", "jjg", "tzg", "pag", "jrn", "jjn", "tzn", "pan")
+# 设置为有序因子（所有 f_df 中涉及的都要设置）
+f_df$Assemblage <- factor(f_df$Assemblage, levels = ordered_groups)
+f_df.line$Assemblage <- factor(f_df.line$Assemblage, levels = ordered_groups)
+f_df.point$Assemblage <- factor(f_df.point$Assemblage, levels = ordered_groups)
 # 绘图
 plot_fungi <-ggplot(f_df, aes(x = x, y = y, colour = Assemblage)) + 
-  geom_line(aes(linetype = Method), lwd = 1.5, data = f_df.line) +
-  geom_ribbon(aes(ymin = y.lwr, ymax = y.upr, fill = Assemblage, colour = NULL), alpha = 0.2) +
-  labs(x = "Number of samples", y = "Fungal ASV richness") +
-  scale_fill_manual(values = c("#8C57A2FF","#3EBCB6","#82581FFF","#2F509EFF",
-                               "#E5614CFF","#97A1A7FF","#DC9445FF","#bee183")) +
-  scale_color_manual(values = c("#8C57A2FF","#3EBCB6","#82581FFF","#2F509EFF",
-                                "#E5614CFF","#97A1A7FF","#DC9445FF","#bee183")) +
-  scale_linetype_discrete(name = NULL) +
-  scale_x_continuous(breaks = c(3, 6, 9, 12)) +
-  guides(
-    colour = "none", 
-    fill = "none",
-    linetype = guide_legend(override.aes = list(size = 2))  # 控制图例线条粗细
-  ) +
-  theme_bw() +
-  theme(panel.border = element_blank(), 
-        panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        axis.line = element_line(colour = "black"),
-        legend.position = c(0.01, 1),
-        legend.justification = c(0, 1),
-        legend.key.width = unit(2, "cm"), # 控制横线长度
-        axis.title.x = element_text(size = 16), # 坐标轴标题（x、y）
-        axis.title.y = element_text(size = 16),
-        axis.text.x = element_text(size = 14), # 坐标轴刻度标签（数字）
-        axis.text.y = element_text(size = 14),
-        legend.text = element_text(size = 14), # 图例文字
-        legend.title = element_text(size = 14) )
+    geom_line(aes(linetype = Method), lwd = 1.5, data = f_df.line) +
+    geom_ribbon(aes(ymin = y.lwr, ymax = y.upr, fill = Assemblage, colour = NULL), alpha = 0.2) +
+    labs(x = "Number of samples", y = "Fungal ASV richness") +
+    scale_fill_manual(values = c("#8C57A2FF","#3EBCB6","#82581FFF","#2F509EFF",
+                                 "#E5614CFF","#97A1A7FF","#DC9445FF","#bee183")) +
+    scale_color_manual(values = c("#8C57A2FF","#3EBCB6","#82581FFF","#2F509EFF",
+                                  "#E5614CFF","#97A1A7FF","#DC9445FF","#bee183")) +
+    scale_linetype_discrete(name = NULL) +
+    scale_x_continuous(breaks = c(3, 6, 9, 12)) +
+    guides(
+        colour = "none", 
+        fill = "none",
+        linetype = guide_legend(override.aes = list(size = 2))  # 控制图例线条粗细
+    ) +
+    theme_bw() +
+    theme(panel.border = element_blank(), 
+          panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(), 
+          axis.line = element_line(colour = "black"),
+          legend.position = c(0.01, 1),
+          legend.justification = c(0, 1),
+          legend.key.width = unit(2, "cm"), # 控制横线长度
+          axis.title.x = element_text(size = 16), # 坐标轴标题（x、y）
+          axis.title.y = element_text(size = 16),
+          axis.text.x = element_text(size = 14), # 坐标轴刻度标签（数字）
+          axis.text.y = element_text(size = 14),
+          legend.text = element_text(size = 14), # 图例文字
+          legend.title = element_text(size = 14) )
 plot_fungi
 #ggsave("D:/study/master/Main_Figure_tables/Figure_2/2a_gamma_fungi.png", plot = plot_fungi, width = 8, height = 6, dpi = 600, bg = "transparent")
-# 自定义图例数据：4列2行
+# 自定义标签和颜色（与你主图保持一致）
 legend_df <- data.frame(
-  x = rep(seq(1,4), each = 2),  # 设置为4列，增大列间距，by = 1.5表示间隔1.5
-  y = rep(2:1, 4),  # 2 行
-  label = c("Jurong Rhizosphere Soil", "Jingjiang Rhizosphere Soil","Jurong Bulb","Jingjiang Bulb", "Tongzhou Rhizosphere Soil", "Panan Rhizosphere Soil","Tongzhou Bulb",
-            "Panan Bulb"),
-  color = c("#82581F","#8C57A2","#2F509E", "#3EBCB6", "#DC9445","#E5614C", "#BEE183", "#97A1A7")
+  x = rep(seq(1, 4), each = 2),  # 4 列，每列 2 行
+  y = rep(2:1, 4),               # 行方向
+  label = c("Jurong Rhizosphere Soil", "Jurong Bulb",
+            "Jingjiang Rhizosphere Soil", "Jingjiang Bulb",
+            "Tongzhou Rhizosphere Soil", "Tongzhou Bulb",
+            "Panan Rhizosphere Soil", "Panan Bulb"),
+  color = c("#8C57A2FF", "#E5614CFF",  # Jurong Soil, Bulb
+            "#3EBCB6", "#97A1A7FF",    # Jingjiang Soil, Bulb
+            "#82581FFF", "#DC9445FF",  # Tongzhou Soil, Bulb
+            "#2F509EFF", "#bee183")    # Panan Soil, Bulb
+  #label = c("Jurong Rhizosphere Soil", "Jingjiang Rhizosphere Soil", "Tongzhou Rhizosphere Soil", "Panan Rhizosphere Soil",
+            #"Jurong Bulb", "Jingjiang Bulb", "Tongzhou Bulb", "Panan Bulb"),
+  #color = c("#8C57A2", "#3EBCB6", "#82581F", "#2F509E", "#E5614C", "#97A1A7", "#DC9445", "#BEE183")
 )
 # 图例图层（圆点 + 标签）
 legend_plot <- ggplot(legend_df, aes(x, y)) +
   geom_point(aes(color = color), size = 4.5, shape = 16, show.legend = FALSE) +
   geom_text(aes(label = label), hjust = 0, nudge_x = 0.05, color = "black", size = 4.5) +
-  scale_color_identity() +  # 直接使用提供的颜色
+  scale_color_identity() +
   theme_void() +
-  xlim(1, 5) + ylim(0.5, 2.5)  # 调整范围以适应 4 列 2 行布局
+  xlim(1, 5) + ylim(0.5, 2.5)
 legend_plot
 #ggsave("D:/study/master/Main_Figure_tables/Figure_2/2a_gamma_legend.png", plot = legend_plot, width = 12, height = 0.8, dpi = 2000, bg = "transparent")
 # 合并主图和自定义图例（右下角 inset）
 #final_plot_fungi <- ggdraw() +
-#draw_plot(plot_fungi, 0, 0, 1, 1) +
-#draw_plot(legend_plot, 0.46, 0.1, 0.55, 0.22)  # 控制位置和大小（x, y, width, height）
+  #draw_plot(plot_fungi, 0, 0, 1, 1) +
+  #draw_plot(legend_plot, 0.46, 0.1, 0.55, 0.22)  # 控制位置和大小（x, y, width, height）
 #print(final_plot_fungi)
 # 计算频率比
 f_inext_freq_results <- f_out_all_exped$AsyEst  
