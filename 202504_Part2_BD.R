@@ -134,24 +134,28 @@ b_vegan_matrix<- vegan_otu(b_merged)
 #计算 Bray-Curtis 距离矩阵
 b_bray <- vegdist(log1p(b_vegan_matrix), method="bray") 
 #分析流程：组内、组间、组间成对比较。具体为，betadisper（单因素、置换检验）检查组内变异是否一致；若不显著，继续做 PERMANOVA，adonis2 检查 Group 或海拔等变量是否显著影响群落组成，后可进一步细分pairwise.adonis 做组间成对比较，找出差异具体在哪些组；若显著，继续做 多响应变量广义线性模型。
-#检查不同 Group 之间 beta 多样性是否差异显著
-b_bdisp_nomis<- betadisper(b_bray, metadata_nmds$Group, type=c("centroid"))
-b_bdisp_nomis
-#单因素方差分析（ANOVA）来检验不同 Group 之间 beta dispersion 是否存在显著差异
-b_aov_bdisp <-anova(b_bdisp_nomis)
+#检查不同 Group 组内 beta 多样性是否差异显著
+b_bdisp_nomis_group<- betadisper(b_bray, metadata_nmds$Group, type=c("centroid"))
+b_bdisp_nomis_group
+#单因素方差分析（ANOVA）来检验不同 Group 组内 beta dispersion 是否存在显著差异
+b_aov_bdisp_group <-anova(b_bdisp_nomis_group)
 #置换检验 + 成对比较
-permutest(b_bdisp_nomis, pairwise=T)
-#用纬度（latitude）做分组变量分析
-b_bdisp_nomis_lat<- betadisper(b_bray, metadata_nmds$latitude, type=c("centroid"))
-b_bdisp_nomis_lat
-b_aov_bdisp_lat <-anova(b_bdisp_nomis_lat)
-permutest(b_bdisp_nomis_lat, pairwise=T)
+permutest(b_bdisp_nomis_group, pairwise=T)
+#生态位组内
+b_bdisp_nomis_niche<- betadisper(b_bray, metadata_nmds$Niche, type=c("centroid"))
+b_bdisp_nomis_niche
+b_aov_bdisp_niche <-anova(b_bdisp_nomis_niche)
+permutest(b_bdisp_nomis_niche, pairwise=T)
 #如果不显著，则使用 adonis 和成对 adonis，并在稿件中报告这些不同的值
-b_ado <- adonis2(b_bray ~ Group, permutations = 999, method = "bray", data=metadata_nmds) #分组
-b_ado_latitude <- adonis2(b_bray ~ ele_attribute, permutations = 999, method = "bray", data=metadata_nmds)
-pairwise_rb <- pairwise.adonis(b_bray, metadata_nmds$Group, p.adjust.m="holm")#分组
-pairwise_b_lat <- pairwise.adonis(b_bray, metadata_nmds$ele_attribute, p.adjust.m="holm")
-#用 mvabund 包 来进行 群落组成差异分析
+b_ado_group <- adonis2(b_bray ~ Group, permutations = 999, method = "bray", data=metadata_nmds) #分组
+b_ado_group
+b_ado_niche <- adonis2(b_bray ~ Niche, permutations = 999, method = "bray", data=metadata_nmds)#生态位
+b_ado_niche
+pairwise_b_group <- pairwise.adonis(b_bray, metadata_nmds$Group, p.adjust.m="holm")
+pairwise_b_group
+pairwise_b_niche <- pairwise.adonis(b_bray, metadata_nmds$Niche, p.adjust.m="holm")
+pairwise_b_niche
+#如果显著，用 mvabund 包来进行群落组成差异分析
 b_asv_pu <- t(otu_table(b_merged, taxa_are_rows=T))
 b_ab <- mvabund(b_asv_pu)#转换为 mvabund 对象
 b_asv_nb_group <- manyglm(b_ab ~ Group,#多响应变量广义线性模型，分组
@@ -282,24 +286,28 @@ f_vegan_matrix<- vegan_otu(f_merged)
 #计算 Bray-Curtis 距离矩阵
 f_bray <- vegdist(log1p(f_vegan_matrix), method="bray") 
 #分析流程：组内、组间、组间成对比较。具体为，betadisper（单因素、置换检验）检查组内变异是否一致；若不显著，继续做 PERMANOVA，adonis2 检查 Group 或海拔等变量是否显著影响群落组成，后可进一步细分pairwise.adonis 做组间成对比较，找出差异具体在哪些组；若显著，继续做 多响应变量广义线性模型。
-#检查不同 Group 之间 beta 多样性是否差异显著
-f_bdisp_nomis<- betadisper(f_bray, metadata_nmds$Group, type=c("centroid"))
-f_bdisp_nomis
-#单因素方差分析（ANOVA）来检验不同 Group 之间 beta dispersion 是否存在显著差异
-f_aov_bdisp <-anova(f_bdisp_nomis)
+#检查不同 Group 组内 beta 多样性是否差异显著
+f_bdisp_nomis_group<- betadisper(f_bray, metadata_nmds$Group, type=c("centroid"))
+f_bdisp_nomis_group
+#单因素方差分析（ANOVA）来检验不同 Group 组内 beta dispersion 是否存在显著差异
+f_aov_bdisp_group <-anova(f_bdisp_nomis_group)
 #置换检验 + 成对比较
-permutest(f_bdisp_nomis, pairwise=T)
-#用纬度（latitude）做分组变量分析
-f_bdisp_nomis_lat<- betadisper(f_bray, metadata_nmds$latitude, type=c("centroid"))
-f_bdisp_nomis_lat
-f_aov_bdisp_lat <-anova(f_bdisp_nomis_lat)
-permutest(f_bdisp_nomis_lat, pairwise=T)
+permutest(f_bdisp_nomis_group, pairwise=T)
+#生态位组内
+f_bdisp_nomis_niche<- betadisper(f_bray, metadata_nmds$Niche, type=c("centroid"))
+f_bdisp_nomis_niche
+f_aov_bdisp_niche <-anova(f_bdisp_nomis_niche)
+permutest(f_bdisp_nomis_niche, pairwise=T)
 #如果不显著，则使用 adonis 和成对 adonis，并在稿件中报告这些不同的值
-f_ado <- adonis2(f_bray ~ Group, permutations = 999, method = "bray", data=metadata_nmds) #分组
-f_ado_latitude <- adonis2(f_bray ~ ele_attribute, permutations = 999, method = "bray", data=metadata_nmds)
-pairwise_rb <- pairwise.adonis(f_bray, metadata_nmds$Group, p.adjust.m="holm")#分组
-pairwise_f_lat <- pairwise.adonis(f_bray, metadata_nmds$ele_attribute, p.adjust.m="holm")
-#用 mvabund 包 来进行 群落组成差异分析
+f_ado_group <- adonis2(f_bray ~ Group, permutations = 999, method = "bray", data=metadata_nmds) #分组
+f_ado_group
+f_ado_niche <- adonis2(f_bray ~ Niche, permutations = 999, method = "bray", data=metadata_nmds)#生态位
+f_ado_niche
+pairwise_f_group <- pairwise.adonis(f_bray, metadata_nmds$Group, p.adjust.m="holm")
+pairwise_f_group
+pairwise_f_niche <- pairwise.adonis(f_bray, metadata_nmds$Niche, p.adjust.m="holm")
+pairwise_f_niche
+#如果显著，用 mvabund 包来进行群落组成差异分析
 f_asv_pu <- t(otu_table(f_merged, taxa_are_rows=T))
 f_ab <- mvabund(f_asv_pu)#转换为 mvabund 对象
 f_asv_nb_group <- manyglm(f_ab ~ Group,#多响应变量广义线性模型，分组
