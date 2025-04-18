@@ -75,7 +75,7 @@ b_tax_df_clean <- b_tax_df_clean %>%
 b_ASV<-as.data.frame(b_ASV)
 b_ASV$ASV <- rownames(b_ASV) 
 b_otus <- merge(b_tax_df_clean[, c("ASV", "lineage")], b_ASV, by = "ASV", all.x = TRUE)
-row_sums <- rowSums(b_otus[3:48])#去除过少ASV
+row_sums <- rowSums(b_otus[3:50])#去除过少ASV
 rows_to_remove <- row_sums <= 3
 b_otus <- b_otus[!rows_to_remove, ]
 # **解析数据，使 metacoder 识别**
@@ -95,7 +95,7 @@ b_tree$data$tax_abund <- calc_taxon_abund(b_tree, "tax_data")
 # 计算出现次数
 b_tree$data$tax_occ <- calc_n_samples(b_tree, "tax_abund")  
 # **绘制分类热树（Heat Tree）**
-set.seed(199)  # 保证图形的可复现性，可循环1到1000
+set.seed(44)  # 保证图形的可复现性，可循环1到1000
 b_heat_tree <- heat_tree(b_tree, 
                          #基础映射
                          node_color = n_obs,  # 颜色代表 ASV 频率
