@@ -276,9 +276,9 @@ alldist_plot_bacteria<- ggplot(b_merge_alldist_geo_clean) +
   geom_point(aes(y=1-value, x = dist_geo/1000, color= dis), alpha=0.1) + 
   stat_smooth(aes(y=1-value, x = dist_geo/1000, color=dis), method="lm", formula=y ~ (x), size=1.2, se=FALSE, linetype="solid") +
   scale_color_manual(name = "",
-values = custom_colors,
-breaks = c("wunifrac", "BC", "SOR", "unwunifrac"),
-labels = c("Weighted UniFrac", "Bray–Curtis", "Sørensen", "Unweighted UniFrac"))+
+                     values = custom_colors,
+                     breaks = c("wunifrac", "BC", "SOR", "unwunifrac"),
+                     labels = c("Weighted UniFrac", "Bray–Curtis", "Sørensen", "Unweighted UniFrac"))+
   ylab("Bacterial community Similarity") +
   xlab("Geographic distance (km)") + ggtitle("") + theme_bw() +
   scale_x_log10() +
