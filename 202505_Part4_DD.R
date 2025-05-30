@@ -239,7 +239,8 @@ b_unifrac_plot
 #所有群落相异性（Bray-Curtis, Sorensen, 加权 UniFrac, 无加权 UniFrac）与地理距离组合
 b_bind_all_dist <- rbind(b_melt_bc, b_melt_sor, b_melt_uwunifrac, b_melt_unifrac) 
 b_merge_alldist_geo <- merge(b_bind_all_dist, melt_geo)
-get_fishcol <- fish(4, option="Trimma_lantana")#颜色
+get_fishcol <- fish(4, option="Scarus_quoyi") # 获取鱼类调色板颜色
+custom_colors <- c("wunifrac" = "#D53288FF", "BC" = "#3F459BFF", "SOR" = "#009E9EFF", "unwunifrac" = "#AD9C35FF") # 自定义颜色
 # 计算相似性和 Log10 转换的地理距离 (千米) 并过滤
 b_data_for_log_lm <- b_merge_alldist_geo %>%
   mutate(
@@ -270,12 +271,14 @@ b_model_summaries <- b_data_for_log_lm %>%
   })
 # 打印结果
 print(b_model_summaries)
-alldist_plot_bacteria<- ggplot(b_merge_alldist_geo ) + 
+b_merge_alldist_geo_clean <- b_merge_alldist_geo %>% filter(dist_geo !=0)
+alldist_plot_bacteria<- ggplot(b_merge_alldist_geo_clean) + 
   geom_point(aes(y=1-value, x = dist_geo/1000, color= dis), alpha=0.1) + 
   stat_smooth(aes(y=1-value, x = dist_geo/1000, color=dis), method="lm", formula=y ~ (x), size=1.2, se=FALSE, linetype="solid") +
-  scale_color_fish(option="Scarus_quoyi",discrete=T,direction=-1, 
-                   name = "",
-                   labels = c("Bray–Curtis", "Sørensen", "Unweighted UniFrac", "Weighted UniFrac"))+
+  scale_color_manual(name = "",
+values = custom_colors,
+breaks = c("wunifrac", "BC", "SOR", "unwunifrac"),
+labels = c("Weighted UniFrac", "Bray–Curtis", "Sørensen", "Unweighted UniFrac"))+
   ylab("Bacterial community Similarity") +
   xlab("Geographic distance (km)") + ggtitle("") + theme_bw() +
   scale_x_log10() +
@@ -566,7 +569,8 @@ f_unifrac_plot
 #所有群落相异性（Bray-Curtis, Sorensen, 加权 UniFrac, 无加权 UniFrac）与地理距离组合
 f_bind_all_dist <- rbind(f_melt_bc, f_melt_sor, f_melt_uwunifrac, f_melt_unifrac) 
 f_merge_alldist_geo <- merge(f_bind_all_dist, melt_geo)
-get_fishcol <- fish(4, option="Trimma_lantana")#颜色
+get_fishcol <- fish(4, option="Scarus_quoyi") # 获取鱼类调色板颜色
+custom_colors <- c("wunifrac" = "#D53288FF", "BC" = "#3F459BFF", "SOR" = "#009E9EFF", "unwunifrac" = "#AD9C35FF") # 自定义颜色
 # 计算相似性和 Log10 转换的地理距离 (千米) 并过滤
 f_data_for_log_lm <- f_merge_alldist_geo %>%
   mutate(
@@ -597,12 +601,14 @@ f_model_summaries <- f_data_for_log_lm %>%
   })
 # 打印结果
 print(f_model_summaries)
-alldist_plot_fungi<- ggplot(f_merge_alldist_geo ) + 
+f_merge_alldist_geo_clean <- f_merge_alldist_geo %>% filter(dist_geo !=0)
+alldist_plot_fungi<- ggplot(f_merge_alldist_geo_clean) + 
   geom_point(aes(y=1-value, x = dist_geo/1000, color= dis), alpha=0.1) + 
   stat_smooth(aes(y=1-value, x = dist_geo/1000, color=dis), method="lm", formula=y ~ (x), size=1.2, se=FALSE, linetype="solid") +
-  scale_color_fish(option="Scarus_quoyi",discrete=T,direction=-1, 
-                   name = "",
-                   labels = c("Bray–Curtis", "Sørensen", "Unweighted UniFrac", "Weighted UniFrac"))+
+  scale_color_manual(name = "",
+                     values = custom_colors,
+                     breaks = c("wunifrac", "BC", "SOR", "unwunifrac"),
+                     labels = c("Weighted UniFrac", "Bray–Curtis", "Sørensen", "Unweighted UniFrac"))+
   ylab("Fungal community Similarity") +
   xlab("Geographic distance (km)") + ggtitle("") + theme_bw() +
   scale_x_log10() +theme_bw() + 
