@@ -1,4 +1,4 @@
-#图5b 
+#图6b 
 if (!require("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 BiocManager::install("ggtree")
