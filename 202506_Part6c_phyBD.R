@@ -1,4 +1,4 @@
-#图5c
+#图6c
 install.packages(c("picante", "adespatial", "speedyseq", "phyloseq", "ape",
                    "progress", "tibble", "qiime2R", "readxl", "dplyr", "tidyr"))
 library(picante)
@@ -96,8 +96,8 @@ for(h in seq(0.005,0.2,0.005)){ # 遍历不同的系统发育聚合深度
 }
 b_across.part <- data.frame(b_across.part) # 转换为数据框
 colnames(b_across.part)[6:7] <- c("tips","phy.agglom") # 设置列名
-# write.csv(b_across.part, file = "D:/study/master/Main_Figure_tables/Figure_5/5c_b_across.part.csv", row.names = FALSE)
-b_across.part <- read.csv(file = "D:/study/master/Main_Figure_tables/Figure_5/5c_b_across.part.csv", sep=",", header=TRUE, check.names = FALSE)
+# write.csv(b_across.part, file = "D:/study/master/Main_Figure_tables/Figure_6/b_across.part.csv", row.names = FALSE)
+b_across.part <- read.csv(file = "D:/study/master/Main_Figure_tables/Figure_6/b_across.part.csv", sep=",", header=TRUE, check.names = FALSE)
 # 绘制beta多样性随系统发育聚合深度的变化
 plot(b_across.part$phy.agglom, b_across.part$BDtotal,type="b",lwd=1.75, cex=1, xlim=c(0,0.2), ylim=c(0,0.5), xlab="phylogenetic agglomeration depth", ylab="beta diversity")
 # 添加MNTD平均值的垂直线
@@ -128,10 +128,10 @@ for(a in levels(factor(samp2$Group))){ # 遍历每个区域
 b_regs.parts <- data.frame(b_regs.parts)
 # 设置b_regs.parts的列名
 colnames(b_regs.parts)[6:9] <- c("n_tips","perc_tips","phy_glom","region")
-# write.csv(b_regs.parts, file = "D:/study/master/Main_Figure_tables/Figure_5/5c_b_regs.parts.csv", row.names = FALSE)
-b_regs.parts <- read.csv(file = "D:/study/master/Main_Figure_tables/Figure_5/5c_b_regs.parts.csv", sep=",", header=TRUE, check.names = FALSE)
+# write.csv(b_regs.parts, file = "D:/study/master/Main_Figure_tables/Figure_6/b_regs.parts.csv", row.names = FALSE)
+b_regs.parts <- read.csv(file = "D:/study/master/Main_Figure_tables/Figure_6/b_regs.parts.csv", sep=",", header=TRUE, check.names = FALSE)
 # 设置文件路径和名称
-file_path <- "D:/study/master/Main_Figure_tables/Figure_5/5c_phylogenetic_beta_bacteria.png"
+file_path <- "D:/study/master/Main_Figure_tables/Figure_6/phylogenetic_beta_bacteria.png"
 # 打开PNG图形设备
 png(filename = file_path,
     width = 8,        # 图片宽度，单位是英寸 (默认)
@@ -188,8 +188,8 @@ for(h in seq(0.005,0.2,0.005)){ # 遍历系统发育聚合深度
   print(c(h))}
 b_across.unique <-data.frame(b_across.unique) # 转换为数据框
 colnames(b_across.unique) <-c("uniques","n_tips","n_total","h") # 设置列名
-# write.csv(b_across.unique, file = "D:/study/master/Main_Figure_tables/Figure_5/5c_b_across.unique.csv", row.names = TRUE)
-b_across.unique <- read.csv(file = "D:/study/master/Main_Figure_tables/Figure_5/5c_b_across.unique.csv", sep=",", header=TRUE, row.names = 1, check.names = FALSE)
+# write.csv(b_across.unique, file = "D:/study/master/Main_Figure_tables/Figure_6/b_across.unique.csv", row.names = TRUE)
+b_across.unique <- read.csv(file = "D:/study/master/Main_Figure_tables/Figure_6/b_across.unique.csv", sep=",", header=TRUE, row.names = 1, check.names = FALSE)
 #区域内
 b_regs.uniques <-c()
 for(a in levels(factor(samp2$Group))){ # 遍历每个区域
@@ -213,8 +213,8 @@ for(a in levels(factor(samp2$Group))){ # 遍历每个区域
 }
 b_regs.uniques <- data.frame(b_regs.uniques) # 转换为数据框
 colnames(b_regs.uniques) <-c("uniq_tips","all_tips", "perc_tips","h","Group") # 设置列名
-# write.csv(b_regs.uniques, file = "D:/study/master/Main_Figure_tables/Figure_5/5c_b_regs.uniques.csv", row.names = FALSE)
-b_regs.uniques <- read.csv(file = "D:/study/master/Main_Figure_tables/Figure_5/5c_b_regs.uniques.csv", sep=",", header=TRUE, check.names = FALSE)
+# write.csv(b_regs.uniques, file = "D:/study/master/Main_Figure_tables/Figure_6/b_regs.uniques.csv", row.names = FALSE)
+b_regs.uniques <- read.csv(file = "D:/study/master/Main_Figure_tables/Figure_6/b_regs.uniques.csv", sep=",", header=TRUE, check.names = FALSE)
 # 绘制独特类群比例随聚合水平的变化
 plot(b_regs.uniques$h, b_regs.uniques$perc_tips, type="n", xlab="agglomeration level",ylab="unique taxa (%)", ylim=c(0,100))
 for(z in levels(factor(b_regs.uniques$Group))){ # 遍历每个区域
@@ -358,8 +358,8 @@ for(h in seq(0.005,0.2,0.005)){ # 遍历不同的系统发育聚合深度
 }
 f_across.part <- data.frame(f_across.part) # 转换为数据框
 colnames(f_across.part)[6:7] <- c("tips","phy.agglom") # 设置列名
-# write.csv(f_across.part, file = "D:/study/master/Main_Figure_tables/Figure_5/5c_f_across.part.csv", row.names = FALSE)
-f_across.part <- read.csv(file = "D:/study/master/Main_Figure_tables/Figure_5/5c_f_across.part.csv", sep=",", header=TRUE, check.names = FALSE)
+# write.csv(f_across.part, file = "D:/study/master/Main_Figure_tables/Figure_6/f_across.part.csv", row.names = FALSE)
+f_across.part <- read.csv(file = "D:/study/master/Main_Figure_tables/Figure_6/f_across.part.csv", sep=",", header=TRUE, check.names = FALSE)
 # 绘制beta多样性随系统发育聚合深度的变化
 plot(f_across.part$phy.agglom, f_across.part$BDtotal,type="b",lwd=1.75, cex=1, xlim=c(0,0.2), ylim=c(0,0.5), xlab="phylogenetic agglomeration depth", ylab="beta diversity")
 # 添加MNTD平均值的垂直线
@@ -390,10 +390,10 @@ for(a in levels(factor(samp2$Group))){ # 遍历每个区域
 f_regs.parts <- data.frame(f_regs.parts)
 # 设置f_regs.parts的列名
 colnames(f_regs.parts)[6:9] <- c("n_tips","perc_tips","phy_glom","region")
-# write.csv(f_regs.parts, file = "D:/study/master/Main_Figure_tables/Figure_5/5c_f_regs.parts.csv", row.names = FALSE)
-f_regs.parts <- read.csv(file = "D:/study/master/Main_Figure_tables/Figure_5/5c_f_regs.parts.csv", sep=",", header=TRUE, check.names = FALSE)
+# write.csv(f_regs.parts, file = "D:/study/master/Main_Figure_tables/Figure_6/f_regs.parts.csv", row.names = FALSE)
+f_regs.parts <- read.csv(file = "D:/study/master/Main_Figure_tables/Figure_6/f_regs.parts.csv", sep=",", header=TRUE, check.names = FALSE)
 # 设置文件路径和名称
-file_path <- "D:/study/master/Main_Figure_tables/Figure_5/5c_phylogenetic_beta_fungi.png"
+file_path <- "D:/study/master/Main_Figure_tables/Figure_6/phylogenetic_beta_fungi.png"
 # 打开PNG图形设备
 png(filename = file_path,
     width = 8,        # 图片宽度，单位是英寸 (默认)
@@ -450,8 +450,8 @@ for(h in seq(0.005,0.2,0.005)){ # 遍历系统发育聚合深度
   print(c(h))}
 f_across.unique <-data.frame(f_across.unique) # 转换为数据框
 colnames(f_across.unique) <-c("uniques","n_tips","n_total","h") # 设置列名
-# write.csv(f_across.unique, file = "D:/study/master/Main_Figure_tables/Figure_5/5c_f_across.unique.csv", row.names = TRUE)
-f_across.unique <- read.csv(file = "D:/study/master/Main_Figure_tables/Figure_5/5c_f_across.unique.csv", sep=",", header=TRUE, row.names = 1, check.names = FALSE)
+# write.csv(f_across.unique, file = "D:/study/master/Main_Figure_tables/Figure_6/f_across.unique.csv", row.names = TRUE)
+f_across.unique <- read.csv(file = "D:/study/master/Main_Figure_tables/Figure_6/f_across.unique.csv", sep=",", header=TRUE, row.names = 1, check.names = FALSE)
 #区域内
 f_regs.uniques <-c()
 for(a in levels(factor(samp2$Group))){ # 遍历每个区域
@@ -475,8 +475,8 @@ for(a in levels(factor(samp2$Group))){ # 遍历每个区域
 }
 f_regs.uniques <- data.frame(f_regs.uniques) # 转换为数据框
 colnames(f_regs.uniques) <-c("uniq_tips","all_tips", "perc_tips","h","Group") # 设置列名
-# write.csv(f_regs.uniques, file = "D:/study/master/Main_Figure_tables/Figure_5/5c_f_regs.uniques.csv", row.names = FALSE)
-f_regs.uniques <- read.csv(file = "D:/study/master/Main_Figure_tables/Figure_5/5c_f_regs.uniques.csv", sep=",", header=TRUE, check.names = FALSE)
+# write.csv(f_regs.uniques, file = "D:/study/master/Main_Figure_tables/Figure_6/f_regs.uniques.csv", row.names = FALSE)
+f_regs.uniques <- read.csv(file = "D:/study/master/Main_Figure_tables/Figure_6/f_regs.uniques.csv", sep=",", header=TRUE, check.names = FALSE)
 # 绘制独特类群比例随聚合水平的变化
 plot(f_regs.uniques$h, f_regs.uniques$perc_tips, type="n", xlab="agglomeration level",ylab="unique taxa (%)", ylim=c(0,100))
 for(z in levels(factor(f_regs.uniques$Group))){ # 遍历每个区域
