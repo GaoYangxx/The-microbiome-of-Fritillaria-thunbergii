@@ -1,4 +1,4 @@
-#图2c α多样性
+#图2b α多样性
 install.packages(
   "microViz",
   repos = c(davidbarnett = "https://david-barnett.r-universe.dev", getOption("repos"))
