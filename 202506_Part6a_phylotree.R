@@ -316,7 +316,7 @@ p4_bacteria <- b_p3 +
     legend.text = element_text(size = 16)
   )
 p4_bacteria
-#ggsave("D:/study/master/Main_Figure_tables/Figure_5/5a_phy_tree_bacteria.png", plot = p4_bacteria, width = 15, height = 15, dpi = 600, bg = "transparent")
+#ggsave("D:/study/master/Main_Figure_tables/Figure_6/phy_tree_bacteria.png", plot = p4_bacteria, width = 15, height = 15, dpi = 600, bg = "transparent")
 # 自定义标签和颜色（与你主图保持一致）
 legend_df <- data.frame(
   x = rep(seq(1, 4), each = 2),  # 4 列，每列 2 行
@@ -807,7 +807,7 @@ p4_fungi <- f_p3 +
     legend.text = element_text(size = 16)
   )
 p4_fungi
-#ggsave("D:/study/master/Main_Figure_tables/Figure_5/5a_phy_tree_fungi.png", plot = p4_fungi, width = 15, height = 15, dpi = 600, bg = "transparent")
+#ggsave("D:/study/master/Main_Figure_tables/Figure_6/phy_tree_fungi.png", plot = p4_fungi, width = 15, height = 15, dpi = 600, bg = "transparent")
 # 假设 dirs 变量已经包含了所有组的文件夹路径
 dirs <- list.dirs("D:/study/master/iCAMP/fungi", full.names = TRUE, recursive = FALSE)
 # 初始化一个空的数据框，用于存储所有组的 ProcessImportance_EachTurnover 结果
