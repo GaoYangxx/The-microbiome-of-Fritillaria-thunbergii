@@ -287,7 +287,7 @@ p_bacteria <- ggplot() +
         legend.text = element_text(size = 14))   # 图例内容大小
 # 显示图形
 p_bacteria
-#ggsave("D:/study/master/Main_Figure_tables/Figure_5/5b_iCAMP_geo_distance_bacteria.png", plot = p_bacteria, width = 8, height = 8, dpi = 600, bg = "transparent")
+#ggsave("D:/study/master/Main_Figure_tables/Figure_6/iCAMP_geo_distance_bacteria.png", plot = p_bacteria, width = 8, height = 8, dpi = 600, bg = "transparent")
 # 对 HoS 进行线性回归分析
 # 注意：自变量是 log10 转换后的地理距离
 b_model_hos <- lm(I(HoS * 100) ~ log10(Geo_Distance_Meters / 1000), data = b_iCAMP_geo)
@@ -558,7 +558,7 @@ p_fungi <- ggplot() +
         legend.text = element_text(size = 14))   # 图例内容大小
 # 显示图形
 p_fungi
-#ggsave("D:/study/master/Main_Figure_tables/Figure_5/5b_iCAMP_geo_distance_fungi.png", plot = p_fungi, width = 8, height = 8, dpi = 600, bg = "transparent")
+#ggsave("D:/study/master/Main_Figure_tables/Figure_6/iCAMP_geo_distance_fungi.png", plot = p_fungi, width = 8, height = 8, dpi = 600, bg = "transparent")
 # 对 HoS 进行线性回归分析
 # 注意：自变量是 log10 转换后的地理距离
 f_model_hos <- lm(I(HoS * 100) ~ log10(Geo_Distance_Meters / 1000), data = f_iCAMP_geo)
