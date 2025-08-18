@@ -192,21 +192,44 @@ create_empty_radarchart <- function(data, color = "#00AFBB", #vlabels = NULL,
 #try(create_empty_radarchart(data = plant_phytochemicals_normalized, vlabels = c("Soluble protein content (mg/g)","Chlorophyll a\ncontent (mg/g)","Chlorophyll\nb content\n(mg/g)","Total chlorophyll\ncontent (mg/g)","Malondialdehyde\n(nmol/g)","Peimine\ncontent\n(mg/g)","Peiminine\ncontent (mg/g)")) , silent = TRUE)
 #dev.off()
 # ---------------- 3. 绘制中国（江苏省和浙江省）地图 ----------------
-# 下载并加载 GeoJSON 数据
-geojson_url <- "https://geo.datav.aliyun.com/areas_v3/bound/geojson?code=100000_full"
-china_map <- st_read(geojson_url)
-# 可视化地图并添加坐标点（统一黑色）
-chinampa_plot <-ggplot(data = china_map) +
-  geom_sf(fill = "gray85", color = "gray85") +  # 地图填充为灰色，边界为深灰色
-  geom_sf(data = pops_sf, size = 2, color = "black") +  # 添加黑色点
-  theme_void() +  # 移除经纬度和背景网格
+# 输入坐标
+pops <- data.frame(
+  code = c("JR", "JJ", "TZ", "PA"),
+  longitude = c(119.08889, 120.19389, 121.0225, 120.35167),
+  latitude = c(32.13889, 32.00111, 31.99611, 28.92445)
+)
+# 转换为空间数据框
+pops_sf <- st_as_sf(pops, coords = c("longitude", "latitude"), crs = 4326)
+# 绘制地图
+# 下载并加载中国地图（整个国家）
+china_geojson <- "https://geo.datav.aliyun.com/areas_v3/bound/geojson?code=100000_full"
+china_map <- st_read(china_geojson)
+# 下载并加载江苏省和浙江省的 GeoJSON 数据
+jiangsu_geojson <- "https://geo.datav.aliyun.com/areas_v3/bound/geojson?code=320000_full"
+zhejiang_geojson <- "https://geo.datav.aliyun.com/areas_v3/bound/geojson?code=330000_full"
+jiangsu_map <- st_read(jiangsu_geojson)
+zhejiang_map <- st_read(zhejiang_geojson)
+# 合并两省地图数据，用于单独上色
+jiangsu_zhejiang_map <- rbind(jiangsu_map, zhejiang_map)
+# 绘制地图
+china_map_plot_highlighted <- ggplot() +
+  # 先绘制整个中国地图，填充为白色，边界为黑色
+  geom_sf(data = china_map, fill = "white", color = "black") +
+  # 再绘制江苏和浙江两省，覆盖在上面，填充为灰色，边界为无色
+  geom_sf(data = jiangsu_zhejiang_map, fill = "gray85", color = NA) +
+  # 最后添加采样点，颜色为黑色
+  geom_sf(data = pops_sf, size = 2, color = "black") +
+  # 美化主题
+  theme_void() +
   theme(
-    panel.background = element_rect(fill = "white", color = NA),  # 设置画布背景为白色
-    plot.background = element_rect(fill = "white", color = NA)   # 设置整个画布为白色
+    panel.background = element_rect(fill = "white", color = NA),
+    plot.background = element_rect(fill = "white", color = NA)
   )
-chinampa_plot
-library(ggplot2)
-library(sf)
+# 显示地图
+china_map_plot_highlighted
+# 如果需要保存图片，可以使用以下代码
+# ggsave("D:/study/master/Main_Figure_tables/Figure_1/1a_china_highlighted_map.png",
+#        plot = china_map_plot_highlighted, width = 8, height = 8, dpi = 300, bg = "transparent")
 # 下载并加载江苏省（320000）和浙江省（330000）的 GeoJSON 数据
 jiangsu_geojson <- "https://geo.datav.aliyun.com/areas_v3/bound/geojson?code=320000_full"
 zhejiang_geojson <- "https://geo.datav.aliyun.com/areas_v3/bound/geojson?code=330000_full"
@@ -217,13 +240,47 @@ zhejiang_map <- st_read(zhejiang_geojson)
 china_jiangsu_zhejiang_map <- rbind(jiangsu_map, zhejiang_map)
 # 可视化地图并添加采样点（黑色点）
 china_jiangsu_zhejiang_map_plot <- ggplot() +
-  geom_sf(data = china_jiangsu_zhejiang_map, fill = "gray85", color = "gray50") +  # 江苏浙江地图
-  geom_sf(data = pops_sf, size = 2, color = "black") +  # 采样点
-  theme_void() +  # 移除经纬度和网格
-  theme(
-    panel.background = element_rect(fill = "white", color = NA),  
-    plot.background = element_rect(fill = "white", color = NA)   
-  )
+    geom_sf(data = china_jiangsu_zhejiang_map, fill = "gray85", color = "gray50") +  # 江苏浙江地图
+    geom_sf(data = pops_sf, size = 2, color = "black") +  # 采样点
+    theme_void() +  # 移除经纬度和网格
+    theme(
+        panel.background = element_rect(fill = "white", color = NA),  
+        plot.background = element_rect(fill = "white", color = NA)   
+    )
 # 显示地图
 china_jiangsu_zhejiang_map_plot
-#ggsave("D:/study/master/Main_Figure_tables/Figure_1/1a_china_jiangsu_zhejiang_map.png", plot = china_jiangsu_zhejiang_map_plot, width = 8, height = 8, dpi = 300, bg = "transparent")
+#ggsave("D:/study/master/Main_Figure_tables/Figure_1/1a_china_jiangsu_zhejiang_map.png", plot = china_jiangsu_zhejiang_map_plot, width = 8, height = 8, dpi = 300, bg = "transparent")#dpi是Dots Per Inch，每英寸点数
+library(ggspatial) # 用于添加指北针
+# 可视化地图并添加经纬度和指北针
+jiangsu_zhejiang_map_plot <- ggplot() +
+  # 江苏浙江地图，填充为灰色，边界为深灰色
+  geom_sf(data = china_jiangsu_zhejiang_map, fill = "gray85", color = "gray50") +
+  # 采样点，颜色为黑色
+  geom_sf(data = pops_sf, size = 2, color = "black") +
+  # 增加经纬度网格和指北针
+  # coord_sf() 用于控制坐标系和添加经纬度网格
+  coord_sf(crs = st_crs(4326), # 设置坐标系
+           datum = st_crs(4326), # 显示经纬度网格
+           label_axes = "EN") + # 在两边显示标签 (East, North)
+  
+  # annotation_north_arrow() 用于添加指北针
+  # location = "tr" 表示指北针位于右上角 (top-right)
+  annotation_north_arrow(location = "tr", 
+                         which_north = "true", 
+                         pad_x = unit(0.2, "cm"), 
+                         pad_y = unit(0.2, "cm"),
+                         style = north_arrow_fancy_orienteering) +
+  
+  # 美化主题
+  theme_bw() + # 使用 theme_bw() 主题，它自带网格线
+  theme(
+    # 移除网格线，只保留坐标轴标签
+    panel.grid.major = element_line(color = "gray80", linetype = "dashed", linewidth = 0.5),
+    panel.background = element_rect(fill = "white", color = NA),
+    plot.background = element_rect(fill = "white", color = NA),
+    axis.title = element_blank(), # 移除坐标轴标题 (longitude, latitude)
+    axis.text = element_text(size = 18) # 调整坐标轴标签字体大小
+  )
+# 显示地图
+jiangsu_zhejiang_map_plot
+#ggsave("D:/study/master/Main_Figure_tables/Figure_1/1a_jiangsu_zhejiang_map.png", plot = jiangsu_zhejiang_map_plot, width = 8, height = 8, dpi = 300, bg = "transparent")#dpi是Dots Per Inch，每英寸点数
