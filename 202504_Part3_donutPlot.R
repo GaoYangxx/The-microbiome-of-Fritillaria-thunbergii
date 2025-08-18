@@ -1,4 +1,4 @@
-#图3a
+#图3b  甜甜圈图
 install.packages(c("RColorBrewer", "ggplot2", "tidyverse", "reshape2", "ggpubr", " dplyr"))
 install.packages("phyloseqCompanion")
 if (!requireNamespace("BiocManager", quietly = TRUE)) {
