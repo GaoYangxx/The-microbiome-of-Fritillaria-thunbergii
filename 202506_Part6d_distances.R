@@ -1,4 +1,4 @@
-#图5d
+#图6d
 # 定义需要安装的包列表
 packages_to_install <- c("picante", "progress", "ggplot2", "ggridges", "forcats", "tibble", "qiime2R", "readxl", "dplyr", "tidyr", "phyloseq", "stringr", "ggtext")
 for (pkg in packages_to_install) {
@@ -235,7 +235,7 @@ phyl_distance_bacteria <- ggplot(b_res_ordered, aes(x = phy.dist,
   scale_x_continuous(breaks = c(0, 0.2, 0.4, 0.6, 0.8),
                      labels = c("0.0", "0.2", "0.4", "0.6", "0.8"))
 phyl_distance_bacteria
-# ggsave("D:/study/master/Main_Figure_tables/Figure_5/5d_phyl_distance_bacteria.png", plot = phyl_distance_bacteria, width = 6, height = 6, dpi = 600, bg = "transparent")
+# ggsave("D:/study/master/Main_Figure_tables/Figure_6/phyl_distance_bacteria.png", plot = phyl_distance_bacteria, width = 6, height = 6, dpi = 600, bg = "transparent")
 # 对 b_res_ordered 数据按属进行分组
 # 计算每个属的 phy.dist 的中位数和 IQR
 # 格式化结果以匹配参考文献的样式
@@ -542,7 +542,7 @@ phyl_distance_fungi <- ggplot(f_res_ordered, aes(x = phy.dist,
   scale_x_continuous(breaks = c(0, 0.2, 0.4, 0.6, 0.8),
                      labels = c("0.0", "0.2", "0.4", "0.6", "0.8"))
 phyl_distance_fungi
-# ggsave("D:/study/master/Main_Figure_tables/Figure_5/5d_phyl_distance_fungi.png", plot = phyl_distance_fungi, width = 6, height = 6, dpi = 600, bg = "transparent")
+# ggsave("D:/study/master/Main_Figure_tables/Figure_6/phyl_distance_fungi.png", plot = phyl_distance_fungi, width = 6, height = 6, dpi = 600, bg = "transparent")
 # 对 f_res_ordered 数据按属进行分组
 # 计算每个属的 phy.dist 的中位数和 IQR
 # 格式化结果以匹配参考文献的样式
