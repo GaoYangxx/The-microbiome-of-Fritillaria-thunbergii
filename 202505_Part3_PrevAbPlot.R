@@ -1,4 +1,4 @@
-#图3c 
+#图3a 分类学水平散点图，展示属的丰度和普遍性
 install.packages(c("tidyverse", "ggrepel", "RColorBrewer", "readr", "dplyr", "ggplot2", "scales", "stringr"))
 install.packages("BiocManager")
 BiocManager::install("phyloseq")
