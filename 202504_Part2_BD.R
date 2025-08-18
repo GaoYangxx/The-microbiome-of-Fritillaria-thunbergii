@@ -1,4 +1,4 @@
-#图2d β多样性
+#图2c β多样性
 install.packages(c("phyloseq", "vegan", "ggplot2", "ecodist"))
 install.packages("mvabund")
 install.packages("tibble")
