@@ -1031,7 +1031,7 @@ output_base_dir <- "D:/study/master/Main_Figure_tables/Figure_5/"
 # 定义每个处理的子文件夹名称
 treatment_folders <- c("G", "N","JR", "JJ", "TZ", "PA")
 output_suffixes <- c("g", "n", "jr","jj", "tz", "pa")
-title <- c( "Rhizosphere Soil", "Bulb","Jurong ","Jingjiang","Tongzhou","Panan")
+title <- c( "Rhizosphere Soil", "Bulb","Jurong ","Jingjiang","Tongzhou","Pan'an")
 # --- 循环处理每个文件夹 ---
 for (i in 1:length(treatment_folders)) {
   current_input_folder <- paste0(input_base_dir, treatment_folders[i], "/")
@@ -1187,6 +1187,366 @@ for (i in 1:length(treatment_folders)) {
 # --- 循环结束后，不再统一查看所有边密度，因为已单独保存 ---
 print("所有分组的边密度已计算并保存到各自的文件夹中。")
 #生态型
+corBionetwork.st_ecotype = function(
+    ps.st= ps.merge,# phyloseq对象
+    g1 = "Group",# 分组1
+    g2 = NULL,# 分组2
+    g3 = NULL,# 分组3
+    ord.g1 = NULL, # 排序顺序
+    ord.g2 = NULL, # 排序顺序
+    ord.g3 = NULL, # 排序顺序
+    order = NULL, # 出图每行代表的变量
+    fill = "filed",
+    size = "igraph.degree",
+    method = "spearman",
+    lab = NULL,
+    label = TRUE,
+    clu_method = "cluster_fast_greedy",
+    select_layout = TRUE,
+    layout_net = "model_maptree2",
+    r.threshold=0.8,
+    p.threshold=0.01,
+    maxnode = 5,
+    N= 500,
+    scale = TRUE,
+    env = NULL,
+    bio = TRUE,
+    minsize = 4,
+    maxsize = 14,
+    group.node = NULL,
+    model.node = FALSE
+){
+  
+  if (scale) {
+    ps.st  = ps.st %>% ggClusterNet::scale_micro()
+  }
+  
+  
+  ps.all = ps.st
+  map = sample_data(ps.all)
+  
+  # g2 = NULL
+  if (is.null(g2)) {
+    sp = ""
+  } else if (is.null(ord.g2)){
+    sp = map[,g2] %>% as.matrix() %>% as.vector() %>% unique()
+  } else{
+    sp = ord.g2
+    print(sp)
+  }
+  # g3 = NULL
+  if (is.null(g3)) {
+    ti = ""
+  } else if (is.null(ord.g3)){
+    ti = map[,g3] %>% as.matrix() %>% as.vector() %>% unique()
+  } else{
+    ti = ord.g3
+    print(ti)
+  }
+  
+  if (is.null(ord.g1)) {
+    group = map[,g1] %>% as.matrix() %>% as.vector() %>% unique()
+    
+  } else{
+    group = ord.g1
+    print(group)
+  }
+  
+  
+  
+  #-构造两两组合全部情况
+  for (i in 1:length(sp)) {
+    dat = data.frame(g2 = sp[i],g3 = ti)
+    
+    if (i ==1) {
+      dat.f = dat
+    } else{
+      dat.f = rbind(dat.f,dat)
+    }
+    
+  }
+  
+  if (!is.null(env)) {
+    colnames(env)[1] = "ID"
+    env_sub <-  env[match(mapsub$ID,env$ID),]
+    head(env_sub)
+  }
+  
+  
+  j = 1
+  n = 1
+  
+  cor.all = list()
+  # 存储不同分组的相关矩阵拮即可
+  for (j in 1:nrow(dat.f)) {
+    if (dat.f[j,1] == "") {
+      ps.t = ps.all
+    } else{
+      ps.t = ps.all %>% subset_samples.wt(g2,dat.f[j,1])
+    }
+    
+    if (dat.f[j,2] == "") {
+      ps.f = ps.t
+    } else{
+      ps.f = ps.t  %>% subset_samples.wt(g3,dat.f[j,2])
+    }
+    
+    
+    for (n in 1:length(group)) {
+      map = sample_data(ps.f)
+      head(map)
+      map$Group
+      ps.g = ps.f  %>% subset_samples.wt(g1,group[n]) %>% filter_OTU_ps(N)
+      big = TRUE
+      if (bio) {
+        if (!is.null(env)) {
+          
+          if (big) {
+            
+            result <- corBiostripeBig(data =  env_sub,
+                                      group = envGroup,
+                                      ps = ps.g,
+                                      r.threshold = r.threshold,
+                                      p.threshold = p.threshold,
+                                      method = method)
+          } else {
+            result <- corBiostripe(data =  env_sub,
+                                   group = envGroup,
+                                   ps = ps.g,
+                                   r.threshold = r.threshold,
+                                   p.threshold = p.threshold,
+                                   method = method)
+          }
+          
+          
+          #-- extract cor matrix
+          occor.r = result[[1]]
+          tax = as.data.frame((ggClusterNet::vegan_tax(ps.g)))
+          
+          if (length(tax$filed) != 0) {
+            group2 <- data.frame(SampleID = row.names(tax),Group = tax$filed)
+          } else {
+            group2 <- data.frame(SampleID = row.names(tax),Group = "OTU")
+          }
+          
+          colnames(envGroup) <-c("SampleID","Group")
+          netClu = rbind(envGroup,group2)
+          colnames(netClu) <- c("ID","group")
+        } else {
+          
+          if (big) {
+            result <- corBiostripeBig(ps = ps.g,
+                                      r.threshold = r.threshold, p.threshold = p.threshold, method = method)
+          } else {
+            result <- corBiostripe(ps = ps.g,
+                                   r.threshold = r.threshold, p.threshold = p.threshold, method = method)
+          }
+          
+          #-- extract cor matrix
+          occor.r = result[[1]]
+          tax = as.data.frame((ggClusterNet::vegan_tax(ps.g)))
+          
+          if (length(tax$filed) != 0) {
+            group2 <- data.frame(SampleID = row.names(tax),Group = tax$filed)
+          } else {
+            group2 <- data.frame(SampleID = row.names(tax),Group = "OTU")
+          }
+          
+          netClu = group2
+          colnames(netClu) <- c("ID","group")
+          
+        }
+        
+      }
+      
+      # head(netClu)
+      
+      cor = result[[1]]
+      tem = paste(dat.f[j,1],dat.f[j,2],group[n],sep = ".")
+      cor.all[[tem]] = cor
+      # gru.all[[tem]] = cor
+      
+      if (!is.null(group.node)) {
+        group.node = group.node %>% dplyr::filter(ID %in% row.names(cor))
+        netClu = group.node
+        
+      }
+      
+      res = node.edge(
+        cor = cor,
+        select_layout = TRUE,
+        clu_method=clu_method,
+        layout_net = layout_net,
+        group.node = group.node,
+        model.node = model.node
+      )
+      
+      nod = res[[1]]
+      nod$group = tem
+      # head(nod)
+      # ggplot(nod) + geom_point(aes(X1,X2))
+      
+      edg = res[[2]]
+      edg$group = tem
+      
+      netClu$group2 = tem
+      head(nod)
+      head(edg)
+      
+      
+      if (j ==1 & n == 1) {
+        node = nod
+        edge = edg
+        netClu2 = netClu
+      } else{
+        node = rbind(node,nod)
+        edge = rbind(edg,edge)
+        netClu2 = rbind(netClu,netClu2)
+      }
+      
+    }
+    
+  }
+  
+  #   head(edge)
+  #   head(node)
+  #  edge$group %>% unique()
+  #  netClu2$group2%>% unique()
+  # netClu2$group = as.factor(netClu2$group)
+  
+  #-统计边的节点数量 node link
+  tem = edge$group %>% table() %>% as.data.frame()
+  colnames(tem) = c("group","links")
+  i = 1
+  id = edge$group %>% unique()
+  aa = c()
+  for (i in 1:length(id)) {
+    aa[i] = edge %>% filter(group == id[i]) %>%
+      select("OTU_2", "OTU_1") %>% as.matrix() %>%
+      as.vector() %>% unique() %>% length()
+  }
+  tem2 = data.frame(group = id,nodes = aa)
+  
+  tem3 = tem %>% full_join(tem2,by = "group")
+  tem3$label= paste(tem3$group,": (nodes: ",
+                    tem3$nodes,"; links: ",tem3$links,")",sep = "")
+  
+  
+  if (is.null(order)){
+    order = ""
+    
+  }
+  
+  #-行--空间
+  if (order == "space"|order == "g2") {
+    row.id = g3
+    row.num = length(group) * length(ti)
+    a = c()
+    for (i in 1:length(sp)) {
+      for (j in 1:length(ti)) {
+        tem = paste(sp[i],ti[j],group,sep = ".")
+        a = c(a,tem)
+      }
+    }
+    
+  } else if (order == "time"|order == "g3") {
+    row.id = g2
+    row.num = length(group) * length(sp)
+    a = c()
+    for (j in 1:length(ti)) {
+      for (i in 1:length(sp)) {
+        tem = paste(sp[i],ti[j],group,sep = ".")
+        a = c(a,tem)
+      }
+    }
+  } else{
+    a = NULL
+    row.num = length(group)
+  }
+  
+  if (!is.null(a)) {
+    node$group = factor(node$group,levels = a)
+    edge$group = factor(edge$group,levels = a)
+    tem3 = tem3[match(a,tem3$group),]
+  }else{
+    node$group = factor(node$group)
+    edge$group = factor(edge$group)
+  }
+  
+  head(edge)
+  head(node)
+  
+  # ggplot(node %>% filter(group == "..Group1")) +geom_point(aes(X1,X2))
+  
+  tax = ps.st %>% vegan_tax() %>% as.data.frame() %>% rownames_to_column("elements")
+  node = node %>% left_join(tax,by = "elements")
+  
+  
+  tem3$label = factor(tem3$label,levels = tem3$label)
+  edge = edge %>% left_join(tem3,by = "group")
+  head(edge)
+  edge$label = factor(edge$label,levels = as.character(tem3$label))
+  
+  head(node)
+  
+  node = node %>% left_join(tem3,by = "group")
+  node$label = factor(node$label,levels = as.character(tem3$label))
+  
+  
+  
+  net.dat = list(
+    cortab = cor.all,
+    node = node,
+    edge = edge
+  )
+  
+  
+  # 确保 'Other' 是 Phylum 列中的最后一个因子水平
+  node$Phylum <- factor(node$Phylum, levels = ordered_phylum_levels)#
+  col1 = c("#b10026","#4AC0FF")
+  names(col1) = c("+","-")
+  p0 <- ggplot() + geom_segment(aes(x = X1, y = Y1, xend = X2, yend = Y2,color = as.factor(cor)),
+                                data = edge, size = 0.3,alpha = 0.5) +
+    geom_point(aes(x = X1, y = X2,size = !!sym(size), fill = Ecotype, shape = !!sym(fill)),data =  node,alpha = 0.5) +#fill = Ecotype
+    scale_colour_brewer(palette = "Set1") +
+    scale_color_manual(values = col1, labels = c("Negative", "Positive")) +
+    scale_shape_manual(values = c(21,25),labels = c("Bacteria", "Fungi")) + 
+    scale_size(range = c(minsize, maxsize)) +
+    scale_x_continuous(breaks = NULL) +
+    scale_y_continuous(breaks = NULL) +
+    scale_fill_manual(values = brewer.pal(3, "Pastel1"))+
+    # labs( title = current_title) +
+    #facet_wrap(.~ label,scales="free_y",ncol = row.num ) +
+    theme_void()+
+    guides(
+      fill = guide_legend(title = "Phylum", override.aes = list(shape = 22, size = 5), order = 2), # 增加 size = 5# title = "Ecotype"
+      shape = guide_legend(title = "Microbiomes", override.aes = list(size = 5), order = 1),       # 增加 size = 5
+      color = guide_legend(title = "Edge", override.aes = list(size = 8), order = 3),             # 增加 size = 1 (边的粗细)
+      size = "none"
+    ) +
+    theme(
+      #plot.title = element_text(size = 60, hjust = 0.5
+      legend.title = element_text(size = 24), # 调整图例标题的大小，例如 14
+      legend.text = element_text(size = 22),   # 调整图例内容的大小，例如 12
+      legend.spacing.y = unit(5.5, "cm")
+    )
+  
+  p0  
+  
+  tem2 = node %>% dplyr::filter(elements %in% lab[[1]])
+  if (label == TRUE ) {
+    
+    if (!is.null(lab)) {
+      p1 <- p0 + ggrepel::geom_text_repel(aes(X1, X2,label= elements),size=4, data = tem2)
+    } else {
+      p1 <- p0 + ggrepel::geom_text_repel(aes(X1, X2,label= elements),size=4, data = node)
+    }
+    
+  }
+  
+  return(list(network.plot = p0,network.data = net.dat,p1))
+  
+}
 #核心、特殊、其他
 b_tax_species_abundance <- data.frame(b_tax_species)
 # 初始化所有物种为 'Others'
@@ -1241,7 +1601,7 @@ map$Group1 = "one"
 phyloseq::sample_data(ps.merge) <- map
 map = phyloseq::sample_data(ps.merge)
 ps.merge %>% vegan_tax()
-result <- corBionetwork.st(
+result <- corBionetwork.st_ecotype(
   ps.st= ps.merge,
   g1 = "Group1",
   g2 = NULL,
@@ -1348,7 +1708,7 @@ map$Group1 = "one"
 phyloseq::sample_data(ps.merge) <- map
 map = phyloseq::sample_data(ps.merge)
 ps.merge %>% vegan_tax()
-result <- corBionetwork.st(
+result <- corBionetwork.st_ecotype(
   ps.st= ps.merge,
   g1 = "Group1",
   g2 = NULL,
